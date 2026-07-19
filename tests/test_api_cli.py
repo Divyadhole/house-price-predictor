@@ -14,7 +14,10 @@ def _model_and_request():
     train, test = split_data(data, 42)
     model = HousePriceModel.fit(train)
     row = test.iloc[0]
-    request = {key: (None if row[key] != row[key] else row[key]) for key in ["longitude", "latitude", "housing_median_age", "total_rooms", "total_bedrooms", "population", "households", "median_income", "ocean_proximity"]}
+    request = {
+        key: (None if row[key] != row[key] else row[key].item() if hasattr(row[key], "item") else row[key])
+        for key in ["longitude", "latitude", "housing_median_age", "total_rooms", "total_bedrooms", "population", "households", "median_income", "ocean_proximity"]
+    }
     return model, request
 
 
