@@ -29,6 +29,7 @@ def _preprocessor() -> ColumnTransformer:
 class HousePriceModel:
     baseline: Pipeline
     tuned: Pipeline
+    selected: str = "tuned"
 
     @classmethod
     def fit(cls, train: pd.DataFrame) -> "HousePriceModel":
@@ -37,9 +38,10 @@ class HousePriceModel:
         tuned = Pipeline([("preprocess", _preprocessor()), ("model", HistGradientBoostingRegressor(max_iter=220, learning_rate=0.06, max_leaf_nodes=15, l2_regularization=1.0, random_state=42))]).fit(x, y)
         return cls(baseline=baseline, tuned=tuned)
 
-    def predict(self, frame: pd.DataFrame, model: str = "tuned") -> pd.Series:
-        selected = self.tuned if model == "tuned" else self.baseline
-        prediction = selected.predict(frame.drop(columns=[TARGET], errors="ignore"))
+    def predict(self, frame: pd.DataFrame, model: str = "selected") -> pd.Series:
+        chosen = self.selected if model == "selected" else model
+        pipeline = self.tuned if chosen == "tuned" else self.baseline
+        prediction = pipeline.predict(frame.drop(columns=[TARGET], errors="ignore"))
         return pd.Series(prediction, index=frame.index, name="predicted_value")
 
     def save(self, path: str | Path) -> None:

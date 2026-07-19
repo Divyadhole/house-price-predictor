@@ -21,6 +21,7 @@ def train_and_evaluate(settings: Settings = SETTINGS) -> dict[str, object]:
     baseline_metrics = regression_metrics(test[TARGET], baseline_prediction)
     tuned_metrics = regression_metrics(test[TARGET], tuned_prediction)
     chosen = "tuned" if tuned_metrics["rmse"] <= baseline_metrics["rmse"] else "baseline"
+    model.selected = chosen
     chosen_prediction = tuned_prediction if chosen == "tuned" else baseline_prediction
     settings.processed_data_path.parent.mkdir(parents=True, exist_ok=True)
     featured.to_csv(settings.processed_data_path, index=False)
