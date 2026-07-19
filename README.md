@@ -1,5 +1,7 @@
 # House Price Predictor
 
+![House Price Predictor poster](dashboard/poster.svg)
+
 Reproducible house-value regression using a California-housing-shaped offline dataset, train-only preprocessing, baseline and gradient-boosted model comparison, saved inference pipeline, CLI, and FastAPI API.
 
 ## Results
